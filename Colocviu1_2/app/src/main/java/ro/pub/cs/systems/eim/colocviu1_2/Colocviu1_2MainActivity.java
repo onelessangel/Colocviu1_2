@@ -48,7 +48,7 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplication(), String.valueOf(sum), Toast.LENGTH_SHORT).show();
                     }
                 }
-                Toast.makeText(getApplication(), "OK", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplication(), "OK", Toast.LENGTH_SHORT).show();
             } else if (result.getResultCode() == RESULT_CANCELED){
                 Toast.makeText(getApplication(), "CANCEL", Toast.LENGTH_SHORT).show();
             } else {
