@@ -1,6 +1,8 @@
 package ro.pub.cs.systems.eim.colocviu1_2;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -21,6 +23,7 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
     EditText nextTermEditText, allTermsEditText;
     private ActivityResultLauncher<Intent> startActivityForResultLauncher;
     boolean isModified = false;
+    private Intent intent;
     int sum;
 
     @Override
@@ -76,6 +79,20 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
 
             if (isModified == false) {
                 Toast.makeText(getApplication(), String.valueOf(sum), Toast.LENGTH_SHORT).show();
+
+                Log.d("BROADCAST_ACTION", String.valueOf(sum));
+                if (sum >= Constants.THRESHOLD_SUM) {
+                    intent = new Intent();
+                    intent.putExtra("SUM_GENERAL", sum);
+
+                    intent.setComponent(new ComponentName(Constants.SERVICE_PACKAGE, Constants.SERVICE_CLASS));
+                    Log.d("BROADCAST_ACTION", "trimit intent din buton 1");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        this.startForegroundService(intent);    // for versions higher than Oreo
+                    } else {
+                        this.startService(intent);
+                    }
+                }
                 return;
             }
 
@@ -107,5 +124,13 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
 
             Log.d("SAVED_SUM", String.valueOf(sum));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (intent != null) {
+            stopService(intent);
+        }
+        super.onDestroy();
     }
 }
