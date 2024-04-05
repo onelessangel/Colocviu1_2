@@ -16,6 +16,8 @@
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+            Log.d("SAVED_SUM", "am intrat in a doua activitate");
+
             Intent intent = getIntent();
             if (intent != null) {
                 if (intent.hasExtra("ALL_TERMS")) {
