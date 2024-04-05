@@ -1,7 +1,9 @@
 package ro.pub.cs.systems.eim.colocviu1_2;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +26,9 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> startActivityForResultLauncher;
     boolean isModified = false;
     private Intent intent;
+    private IntentFilter intentFilter;
     int sum;
+    private ColocviuBroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,11 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
         computeButton = findViewById(R.id.computeButton);
         nextTermEditText = findViewById(R.id.nextTermEditText);
         allTermsEditText = findViewById(R.id.allTermsEditText);
+
+        broadcastReceiver = new ColocviuBroadcastReceiver();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("ACTION");
+
 
         startActivityForResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
@@ -132,5 +141,19 @@ public class Colocviu1_2MainActivity extends AppCompatActivity {
             stopService(intent);
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(broadcastReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(broadcastReceiver);
+        super.onPause();
     }
 }
